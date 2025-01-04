@@ -96,11 +96,7 @@
         const transmitted = networkTraffic.transmitted.bytes;
         const received = networkTraffic.received.bytes;
 
-        return (
-          <span className="text-muted">
-            {"\u2191"} {transmitted} KiB / {received} KiB {"\u2193"}
-          </span>
-        );
+        return `\u2191 ${transmitted} KiB / ${received} KiB \u2193`
       }
 
       // Get icon to show for how much of the battery is charged.

@@ -179,17 +179,13 @@
                     {workspace.displayName ?? workspace.name}
                   </button>
                 ))}
-
-                <button
-                  className={`tiling-direction nf ${output.glazewm.tilingDirection === "horizontal" ? "nf-md-swap_horizontal" : "nf-md-swap_vertical"}`}
-                  onClick={() =>
-                    output.glazewm.runCommand("toggle-tiling-direction")
-                  }
-                ></button>
               </div>
             )}
 
-            {output.date?.formatted}
+              {output.date?.formatted ?? (
+                <div className="loader"></div>
+              )}
+            </div>
           </div>
 
           <div className="right">
@@ -222,7 +218,9 @@
             {output.memory && (
               <div className="memory border-end">
                 <i className="nf nf-fae-chip"> mem</i>
-                {Math.round(output.memory.usage)}%
+                <span className={output.memory.usage > 85 ? "high-usage" : ""}>
+                  {Math.round(output.memory.usage)} %
+                </span>
               </div>
             )}
 

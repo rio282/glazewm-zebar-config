@@ -92,10 +92,21 @@
         return "disconnected";
       }
 
+      function getNetworkTraffic(networkTraffic) {
+        const transmitted = networkTraffic.transmitted.bytes;
+        const received = networkTraffic.received.bytes;
+
+        return (
+          <span className="text-muted">
+            {"\u2191"} {transmitted} KiB / {received} KiB {"\u2193"}
+          </span>
+        );
+      }
+
       // Get icon to show for how much of the battery is charged.
       function getBatteryIcon(batteryOutput, text = "") {
         const iconIndex = Math.min(4, Math.floor(batteryOutput.chargePercent / 20));
-        const batteryIcon = batteryOutput.isCharging ? "nf nf-fa-battery_charging" : `nf nf-fa-battery_${iconIndex}`;
+        const batteryIcon = batteryOutput.isCharging ? "nf nf-md-power_plug charging-icon" : `nf nf-fa-battery_${iconIndex}`;
 
         return <i className={batteryIcon}> {text}</i>;
       }
@@ -151,11 +162,11 @@
         <div className="app">
           <div className="left">
             <button
-              className={`logo-icon nf nf-md-reload`}
+              className={`logo-icon nf nf-md-power_sleep`}
               onClick={() =>
-                output.glazewm.runCommand(`shell-exec echo hello`)
+                output.glazewm.runCommand(`shell-exec rundll32.exe powrprof.dll,SetSuspendState Hibernate`)
               }
-            >TEMP</button>
+            ></button>
 
             {output.glazewm && (
               <div className="workspaces">
@@ -181,9 +192,9 @@
                 ></button>
               </div>
             )}
-          </div>
 
-          <div className="center">{output.date?.formatted}</div>
+            {output.date?.formatted}
+          </div>
 
           <div className="right">
             {output.glazewm && (
@@ -200,47 +211,40 @@
             )}
 
             {output.network && (
-              <div className="network">
+              <div className="network border-end">
                 {getNetworkIcon(output.network)}
                 {output.network.defaultGateway?.ssid}
                 &nbsp;
                 <span className="text-muted">
                   ({getNetworkStrengthQualityText(output.network.defaultGateway?.signalStrength)})
                 </span>
+                &nbsp;
+                {getNetworkTraffic(output.network.traffic)}
               </div>
             )}
 
             {output.memory && (
-              <div className="memory">
+              <div className="memory border-end">
                 <i className="nf nf-fae-chip"> mem</i>
                 {Math.round(output.memory.usage)}%
               </div>
             )}
 
             {output.cpu && (
-              <div className="cpu">
+              <div className="cpu border-end">
                 <i className="nf nf-oct-cpu"> cpu</i>
-
-                {/* Change the text color if the CPU usage is high. */}
-                <span
-                  className={output.cpu.usage > 85 ? "high-usage" : ""}
-                >
+                <span className={output.cpu.usage > 85 ? "high-usage" : ""}>
                   {Math.round(output.cpu.usage)} %
                 </span>
               </div>
             )}
 
             {output.battery && (
-              <div className="battery">
-                {/* Show icon for whether battery is charging. */}
-                {output.battery.isCharging && (
-                  <i className="nf nf-md-power_plug charging-icon"></i>
-                )}
+              <div className="battery border-end">
                 {getBatteryIcon(output.battery, "pow")}
                 {Math.round(output.battery.chargePercent)}%
-                &nbsp;
                 <span className="text-muted">
-                  ({output.battery.isCharging ? "+" : "-"})
+                  ({output.battery.isCharging ? "\u2191" : "\u2193"})
                 </span>
               </div>
             )}

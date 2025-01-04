@@ -28,8 +28,8 @@ body,
 }
 
 .app {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   height: 100%;
   padding: 4px 1.5vw;
@@ -43,14 +43,6 @@ body,
   align-items: center;
 }
 
-.center {
-  justify-self: center;
-}
-
-.right {
-  justify-self: end;
-}
-
 .logo,
 .binding-mode,
 .tiling-direction,
@@ -59,7 +51,7 @@ body,
 .memory,
 .cpu,
 .battery {
-  margin-right: 20px;
+  margin-right: 8px;
 }
 
 .workspaces {
@@ -118,5 +110,15 @@ body,
 }
 
 .text-muted {
-  color: rgb(255 255 255 / 50%);;
+  color: rgb(255 255 255 / 50%);
+}
+
+.border-end {
+  padding-inline-end: 8px;
+  border-right: 0.125rem solid rgb(255 255 255 / 50%);
+  height: 100%;
+}
+
+.battery>.text-muted {
+  margin-left: 4px;
 }

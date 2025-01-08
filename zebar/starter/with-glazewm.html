@@ -93,10 +93,12 @@
       }
 
       function getNetworkTraffic(networkTraffic) {
-        const transmitted = networkTraffic.transmitted.bytes;
-        const received = networkTraffic.received.bytes;
+        const transmitted = networkTraffic.transmitted.siValue;
+        const transmittedFormat = networkTraffic.transmitted.siUnit
+        const received = networkTraffic.received.siValue;
+        const receivedFormat = networkTraffic.received.siUnit;
 
-        return `\u2191 ${transmitted} KiB / ${received} KiB \u2193`
+        return `\u2191 ${transmitted} ${transmittedFormat} / ${received} ${receivedFormat} \u2193`
       }
 
       // Get icon to show for how much of the battery is charged.

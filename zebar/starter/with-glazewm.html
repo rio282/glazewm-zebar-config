@@ -237,7 +237,7 @@
             {output.battery && (
               <div className="battery border-end">
                 {getBatteryIcon(output.battery, "pow")}
-                {Math.round(output.battery.chargePercent)}%
+                {Math.round(output.battery.chargePercent)} %
                 <span className="text-muted">
                   ({output.battery.isCharging ? "\u2191" : "\u2193"})
                 </span>

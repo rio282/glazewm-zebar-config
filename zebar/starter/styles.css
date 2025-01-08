@@ -21,7 +21,7 @@ body,
 }
 
 #root {
-  border-bottom: 1px solid #6c5e8b;
+  /* border-bottom: 1px solid #6c5e8b; */
   background: linear-gradient(to top, #2a273f, #201c2c);
 }
 
@@ -48,7 +48,8 @@ body,
 .network,
 .memory,
 .cpu,
-.battery {
+.battery,
+.media {
   margin-right: 8px;
   font-weight: lighter;
 }

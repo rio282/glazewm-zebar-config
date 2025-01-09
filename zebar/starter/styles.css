@@ -1,10 +1,4 @@
-@import 'https://www.nerdfonts.com/assets/css/webfont.css';
-
-i {
-  color: #f5c2e7;
-  /* Rosewater */
-  margin-right: 7px;
-}
+@import "https://www.nerdfonts.com/assets/css/webfont.css";
 
 body {
   color: #f5e0dc;
@@ -18,16 +12,24 @@ html,
 body,
 #root {
   height: 100%;
+  background: transparent;
 }
 
 #root {
+  /* idk man i like the border SOMETIMES */
   /* border-bottom: 1px solid #6c5e8b; */
-  background: linear-gradient(to top, #2a273f, #201c2c);
+  /* background: linear-gradient(to top, #2a273f, #201c2c); */
+  /* border-radius: 25px; */
+}
+
+i {
+  color: #f5c2e7;
+  margin-right: 7px;
 }
 
 .app {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 45% 10% 45%;
   align-items: center;
   height: 100%;
   padding: 4px 1.5vw;
@@ -39,6 +41,20 @@ body,
 .right {
   display: flex;
   align-items: center;
+  overflow: hidden;
+}
+
+.left {
+  justify-self: start;
+}
+
+.center {
+  justify-self: center;
+  color: #f5c2e7;
+}
+
+.right {
+  justify-self: end;
 }
 
 .logo,
@@ -97,18 +113,23 @@ body,
   border: none;
   border-radius: 50%;
   padding: 1.5rem;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 75%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 40%);
   transition: background 0.5s ease;
 }
 
 .logo-icon:hover,
 .logo-icon:focus {
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 75%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 50%);
 }
 
 .date {
   margin-left: 4px;
+  margin-right: 4px;
   font-weight: bold;
+}
+
+.media {
+  margin-left: 4px;
 }
 
 .battery {
@@ -122,18 +143,27 @@ body,
   top: 3px;
 }
 
+.disks {
+  margin-right: 8px;
+}
+
+.disk {
+  font-weight: lighter;
+  margin-left: 4px;
+}
+
 .text-muted {
   color: #6c5e8b;
+}
+
+.battery>.text-muted {
+  margin-left: 4px;
 }
 
 .border-end {
   padding-inline-end: 8px;
   border-right: 0.125rem solid #6c5e8b;
   height: 100%;
-}
-
-.battery>.text-muted {
-  margin-left: 4px;
 }
 
 .loader {
@@ -153,4 +183,8 @@ body,
   100% {
     transform: rotate(360deg);
   }
+}
+
+.high-usage {
+  color: #9E2A2F
 }

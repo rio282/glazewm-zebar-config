@@ -38,6 +38,9 @@
       battery: { type: "battery" },
       memory: { type: "memory" },
       weather: { type: "weather" },
+      media: { type: "media" },
+      disk: { type: "disk" },
+      audio: { type: "audio" },
     });
 
     createRoot(document.getElementById("root")).render(<App />);
@@ -49,32 +52,38 @@
         providers.onOutput(() => setOutput(providers.outputMap));
       }, []);
 
+      const [compactMode, setCompactMode] = useState(true);
+
+      const toggleCompactMode = () => {
+        setCompactMode(!compactMode);
+      };
+
       // Get icon to show for current network status.
       function getNetworkIcon(networkOutput) {
         switch (networkOutput.defaultInterface?.type) {
           case "ethernet":
-            return <i className="nf nf-md-ethernet_cable"> eth</i>;
+            return <i className="nf nf-md-ethernet_cable"></i>;
           case "wifi":
             if (networkOutput.defaultGateway?.signalStrength >= 80) {
-              return <i className="nf nf-md-wifi_strength_4"> net</i>;
+              return <i className="nf nf-md-wifi_strength_4"></i>;
             } else if (
               networkOutput.defaultGateway?.signalStrength >= 65
             ) {
-              return <i className="nf nf-md-wifi_strength_3"> net</i>;
+              return <i className="nf nf-md-wifi_strength_3"></i>;
             } else if (
               networkOutput.defaultGateway?.signalStrength >= 40
             ) {
-              return <i className="nf nf-md-wifi_strength_2"> net</i>;
+              return <i className="nf nf-md-wifi_strength_2"></i>;
             } else if (
               networkOutput.defaultGateway?.signalStrength >= 25
             ) {
-              return <i className="nf nf-md-wifi_strength_1"> net</i>;
+              return <i className="nf nf-md-wifi_strength_1"></i>;
             } else {
-              return <i className="nf nf-md-wifi_strength_outline"> net</i>;
+              return <i className="nf nf-md-wifi_strength_outline"></i>;
             }
           default:
             return (
-              <i className="nf nf-md-wifi_strength_off_outline"> net DISCONNECTED</i>
+              <i className="nf nf-md-wifi_strength_off_outline">DISCONNECTED</i>
             );
         }
       }
@@ -93,20 +102,20 @@
       }
 
       function getNetworkTraffic(networkTraffic) {
-        const transmitted = networkTraffic.transmitted.siValue;
+        const transmitted = networkTraffic.transmitted.siValue === 0 ? "-" : networkTraffic.transmitted.siValue;
         const transmittedFormat = networkTraffic.transmitted.siUnit
-        const received = networkTraffic.received.siValue;
+        const received = networkTraffic.received.siValue === 0 ? "-" : networkTraffic.received.siValue;
         const receivedFormat = networkTraffic.received.siUnit;
 
         return `\u2191 ${transmitted} ${transmittedFormat} / ${received} ${receivedFormat} \u2193`
       }
 
       // Get icon to show for how much of the battery is charged.
-      function getBatteryIcon(batteryOutput, text = "") {
+      function getBatteryIcon(batteryOutput) {
         const iconIndex = Math.min(4, Math.floor(batteryOutput.chargePercent / 20));
         const batteryIcon = batteryOutput.isCharging ? "nf nf-md-power_plug charging-icon" : `nf nf-fa-battery_${iconIndex}`;
 
-        return <i className={batteryIcon}> {text}</i>;
+        return <i className={batteryIcon}></i>;
       }
 
       // Get icon to show for current weather status.
@@ -156,14 +165,17 @@
         return weatherType.join(" ");
       }
 
+      function trimText(text, maxLength, splitAtFirstSpaceInstead = false, trail = "...") {
+        if (text.length < maxLength) return text;
+        return (splitAtFirstSpaceInstead && text.includes(" ")) ? text.split(" ")[0] : (text.substring(0, maxLength).trim() + trail);
+      }
+
       return (
         <div className="app">
           <div className="left">
             <button
               className={`logo-icon nf nf-md-power_sleep`}
-              onClick={() =>
-                output.glazewm.runCommand(`shell-exec rundll32.exe powrprof.dll,SetSuspendState Hibernate`)
-              }
+              onClick={() => toggleCompactMode()}
             ></button>
 
             {output.glazewm && (
@@ -184,11 +196,30 @@
               </div>
             )}
 
-            <div className="date">
+            <div className="date border-end">
+              {output.date?.formatted && (<i className="nf nf-cod-calendar"></i>)}
               {output.date?.formatted ?? (
                 <div className="loader"></div>
               )}
             </div>
+
+            {output.media?.currentSession && output.audio && (
+              <div className="media text-muted">
+                <i className="nf nf-fa-music"></i> Playing "{trimText(output.media.currentSession.title, 12)}" by {trimText(output.media.currentSession.artist, 8)}
+                {!compactMode && output.audio.defaultPlaybackDevice && (
+                  <span>
+                    &nbsp;@ {trimText(output.audio.defaultPlaybackDevice.name, 12, true)}&nbsp;
+                    <span className={output.audio.defaultPlaybackDevice.volume > 85 ? "high-usage" : ""}>
+                      (<span className="nf nf-fa-volume_high"></span> {output.audio.defaultPlaybackDevice.volume}%)
+                    </span>
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="center">
+            {trimText(output.glazewm?.focusedContainer?.processName ?? "", 16)}
           </div>
 
           <div className="right">
@@ -209,40 +240,38 @@
               <div className="network border-end">
                 {getNetworkIcon(output.network)}
                 {output.network.defaultGateway?.ssid}
-                &nbsp;
-                <span className="text-muted">
-                  ({getNetworkStrengthQualityText(output.network.defaultGateway?.signalStrength)})
-                </span>
+                {!compactMode && (
+                  <span className="text-muted">
+                    &nbsp;({getNetworkStrengthQualityText(output.network.defaultGateway?.signalStrength)})
+                  </span>
+                )}
                 &nbsp;
                 {getNetworkTraffic(output.network.traffic)}
               </div>
             )}
 
-            {output.memory && (
-              <div className="memory border-end">
-                <i className="nf nf-fae-chip"> mem</i>
-                <span className={output.memory.usage > 85 ? "high-usage" : ""}>
-                  {Math.round(output.memory.usage)} %
-                </span>
-              </div>
-            )}
-
-            {output.cpu && (
+            {!compactMode && output.cpu && (
               <div className="cpu border-end">
-                <i className="nf nf-oct-cpu"> cpu</i>
+                <i className="nf nf-oct-cpu"></i>
                 <span className={output.cpu.usage > 85 ? "high-usage" : ""}>
                   {Math.round(output.cpu.usage)} %
                 </span>
               </div>
             )}
 
+            {!compactMode && output.memory && (
+              <div className="memory border-end">
+                <i className="nf nf-fa-memory"></i>
+                <span className={output.memory.usage > 85 ? "high-usage" : ""}>
+                  {Math.round(output.memory.usage)} %
+                </span>
+              </div>
+            )}
+
             {output.battery && (
               <div className="battery border-end">
-                {getBatteryIcon(output.battery, "pow")}
+                {getBatteryIcon(output.battery)}
                 {Math.round(output.battery.chargePercent)} %
-                <span className="text-muted">
-                  ({output.battery.isCharging ? "\u2191" : "\u2193"})
-                </span>
               </div>
             )}
 

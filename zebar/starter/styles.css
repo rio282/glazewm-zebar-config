@@ -16,10 +16,8 @@ body,
 }
 
 #root {
-  /* idk man i like the border SOMETIMES */
-  /* border-bottom: 1px solid #6c5e8b; */
-  /* background: linear-gradient(to top, #2a273f, #201c2c); */
-  /* border-radius: 25px; */
+  border-bottom: 1px solid #6c5e8b;
+  background: linear-gradient(to top, rgba(42, 39, 63, 0.7), rgba(32, 28, 44, 0.7));
 }
 
 i {

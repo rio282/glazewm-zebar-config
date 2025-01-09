@@ -166,6 +166,7 @@
       }
 
       function trimText(text, maxLength, splitAtFirstSpaceInstead = false, trail = "...") {
+        if (!text) return "";
         if (text.length < maxLength) return text;
         return (splitAtFirstSpaceInstead && text.includes(" ")) ? text.split(" ")[0] : (text.substring(0, maxLength).trim() + trail);
       }

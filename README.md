@@ -12,3 +12,13 @@ Requires: Zebar 2.6+
 ## Background
 
 ![My Background](background/cat_leaves.png)
+
+## Windows with GlazeWM
+
+**Single window**
+
+![Single window](single_window.png)
+
+**Multiple windows**
+
+![Multiple windows](multiple_windows.png)

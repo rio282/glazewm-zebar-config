@@ -132,6 +132,8 @@ i {
 
 .battery {
   position: relative;
+  margin-left: 4px;
+  padding-left: 4px;
 }
 
 .battery .charging-icon {
